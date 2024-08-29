@@ -88,97 +88,97 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    public class DriveSubsystem extends SubsystemBase {
-        public DriveSubsystem() {
-            AutoBuilder.configureHolonomic(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(3.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(100.0, 0.0, 0.2), // Rotation PID constants
-                    3, // Max module speed, in m/s
-                    0.47117, // Drive base radius in meters. Distance from robot center to furthest module.
-                    new ReplanningConfig() // Default path replanning config. See the API for the options here
-            ),
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+//     public class DriveSubsystem extends SubsystemBase {
+//         public DriveSubsystem() {
+//             AutoBuilder.configureHolonomic(
+//             this::getPose, // Robot pose supplier
+//             this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+//             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+//             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+//             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+//                     new PIDConstants(3.0, 0.0, 0.0), // Translation PID constants
+//                     new PIDConstants(100.0, 0.0, 0.2), // Rotation PID constants
+//                     3, // Max module speed, in m/s
+//                     0.47117, // Drive base radius in meters. Distance from robot center to furthest module.
+//                     new ReplanningConfig() // Default path replanning config. See the API for the options here
+//             ),
+//             () -> {
+//               // Boolean supplier that controls when the path will be mirrored for the red alliance
+//               // This will flip the path being followed to the red side of the field.
+//               // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-    );
+//               var alliance = DriverStation.getAlliance();
+//               if (alliance.isPresent()) {
+//                 return alliance.get() == DriverStation.Alliance.Red;
+//               }
+//               return false;
+//             },
+//             this // Reference to this subsystem to set requirements
+//     );
 
-  }
+//   }
 
-//getPose method
-public Pose2d getPose() {
-    return odometry.getPoseMeters();
-  }
+// //getPose method
+// public Pose2d getPose() {
+//     return odometry.getPoseMeters();
+//   }
 
-public Pose2d getPose2d() {
-    return m_odometry.getEstimatedPosition();
-  }
+// public Pose2d getPose2d() {
+//     return m_odometry.getEstimatedPosition();
+//   }
 
- //resetPose method 
-private final Pigeon2 m_gyro = new Pigeon2(10);
+//  //resetPose method 
+// private final Pigeon2 m_gyro = new Pigeon2(10);
 
-public void resetEncoders() {
-    mDriveMotor.setPosition(0);
-  }
+// public void resetEncoders() {
+//     mDriveMotor.setPosition(0);
+//   }
 
-public void resetModEncoders() {
-    Mod0.resetEncoders();
-    Mod1.resetEncoders();
-    Mod2.resetEncoders();
-    Mod3.resetEncoders();
-  }
+// public void resetModEncoders() {
+//     Mod0.resetEncoders();
+//     Mod1.resetEncoders();
+//     Mod2.resetEncoders();
+//     Mod3.resetEncoders();
+//   }
 
-public void resetOdometry(Pose2d pose) {
+// public void resetOdometry(Pose2d pose) {
 
-    resetModEncoders();
+//     resetModEncoders();
 
-    m_odometry.resetPosition(
-      m_gyro.getRotation2d(),
-        new SwerveModulePosition[] {
-            Mod0.getPosition(),
-            Mod1.getPosition(),
-            Mod2.getPosition(),
-            Mod3.getPosition()
-        },
-        pose);
-  }
+//     m_odometry.resetPosition(
+//       m_gyro.getRotation2d(),
+//         new SwerveModulePosition[] {
+//             Mod0.getPosition(),
+//             Mod1.getPosition(),
+//             Mod2.getPosition(),
+//             Mod3.getPosition()
+//         },
+//         pose);
+//   }
 
-  //getRobotRelativeSpeeds method
-  public ChassisSpeeds getRobotRelativeSpeeds() {
-    return TunerConstants.Swerve.swerveKinematics.toChassisSpeeds(
-        Mod0.getState(),
-        Mod1.getState(),
-        Mod2.getState(),
-        Mod3.getState());
-  }
+//   //getRobotRelativeSpeeds method
+//   public ChassisSpeeds getRobotRelativeSpeeds() {
+//     return TunerConstants.Swerve.swerveKinematics.toChassisSpeeds(
+//         Mod0.getState(),
+//         Mod1.getState(),
+//         Mod2.getState(),
+//         Mod3.getState());
+//   }
 
-  // driveRobotRelative method
- public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-    var swerveModuleStates = 
-        TunerConstants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+//   // driveRobotRelative method
+//  public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
+//     var swerveModuleStates = 
+//         TunerConstants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
   
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        (SwerveModuleState[]) swerveModuleStates, TunerConstants.kSpeedAt12VoltsMps);
+//     SwerveDriveKinematics.desaturateWheelSpeeds(
+//         (SwerveModuleState[]) swerveModuleStates, TunerConstants.kSpeedAt12VoltsMps);
   
-    Mod0.setDesiredState(swerveModuleStates[0], hasAppliedOperatorPerspective);
-    Mod1.setDesiredState(swerveModuleStates[1], hasAppliedOperatorPerspective);
-    Mod2.setDesiredState(swerveModuleStates[2], hasAppliedOperatorPerspective);
-    Mod3.setDesiredState(swerveModuleStates[3], hasAppliedOperatorPerspective);
-  }
-}
+//     Mod0.setDesiredState(swerveModuleStates[0], hasAppliedOperatorPerspective);
+//     Mod1.setDesiredState(swerveModuleStates[1], hasAppliedOperatorPerspective);
+//     Mod2.setDesiredState(swerveModuleStates[2], hasAppliedOperatorPerspective);
+//     Mod3.setDesiredState(swerveModuleStates[3], hasAppliedOperatorPerspective);
+//   }
+// }
     
     @Override
     public void periodic() {
