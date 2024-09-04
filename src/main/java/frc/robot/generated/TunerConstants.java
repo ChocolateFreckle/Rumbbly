@@ -278,4 +278,8 @@ public class TunerConstants {
 
     public static final CommandSwerveDrivetrain DriveTrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);
+
+    public static final int IntakeFeed = 20, IntakeCenter = 21, IntakeSensor = 22;
+    public static final int ArmAngle = 30, ArmSensor = 31, LaunchFeed = 32; 
+    public static final int LaunchRtFlywheel = 33, LaunchLtFlywheel = 34, LaunchSensor = 35;
 }

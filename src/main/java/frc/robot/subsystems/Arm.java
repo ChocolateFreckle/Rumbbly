@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
 public class Arm extends ProfiledPIDSubsystem {
-  public final CANSparkMax arm_Spark1 = new CANSparkMax(11,MotorType.kBrushless);
-  public final CANSparkMax arm_Spark2 = new CANSparkMax(12, MotorType.kBrushless);
+  public final CANSparkMax arm_Spark1 = new CANSparkMax(11,MotorType.kBrushless);//Check ID
+  public final CANSparkMax arm_Spark2 = new CANSparkMax(12, MotorType.kBrushless);//Check ID
   public final SparkAbsoluteEncoder absoluteEncoder = arm_Spark1.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
   public double K_G = -0.05;
   /** Creates a new Arm2. */
