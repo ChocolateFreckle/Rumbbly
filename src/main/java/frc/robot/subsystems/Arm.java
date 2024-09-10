@@ -50,7 +50,7 @@ public class Arm extends ProfiledPIDSubsystem {
   }
 
   @Override
-  public double getMeasurement() {
+  public boolean getMeasurement() {
     // Return the process variable measurement here
     return (absoluteEncoder.getPosition() * 360);
   }
