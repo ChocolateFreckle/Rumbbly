@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
+
+import au.grapplerobotics.LaserCan;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -17,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 public class Arm extends ProfiledPIDSubsystem {
   public final CANSparkMax arm_Spark1 = new CANSparkMax(11,MotorType.kBrushless);//Check ID
   public final CANSparkMax arm_Spark2 = new CANSparkMax(12, MotorType.kBrushless);//Check ID
+  public final LaserCan lc = new LaserCan(0);
+  public final LaserCan lc2 = new LaserCan(1);
   public final SparkAbsoluteEncoder absoluteEncoder = arm_Spark1.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
   public double K_G = -0.05;
   /** Creates a new Arm2. */
@@ -37,20 +42,19 @@ public class Arm extends ProfiledPIDSubsystem {
       arm_Spark2.setIdleMode(IdleMode.kBrake);
   }
 
-  
 
   @Override
   public void useOutput(double output, TrapezoidProfile.State setpoint) {
     double theta = getMeasurement() * 2*Math.PI/360;
     arm_Spark1.set(-output + K_G* Math.cos(theta));
-    SmartDashboard.putNumber("Measurement", getMeasurement());
-    SmartDashboard.putNumber("output", output);
+    //SmartDashboard.putNumber("Measurement", getMeasurement());
+    //SmartDashboard.putNumber("output", output);
 
     // Use the output (and optionally the setpoint) here
   }
 
   @Override
-  public boolean getMeasurement() {
+  public double getMeasurement() {
     // Return the process variable measurement here
     return (absoluteEncoder.getPosition() * 360);
   }

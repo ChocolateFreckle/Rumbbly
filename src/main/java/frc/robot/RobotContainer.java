@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAlternateEncoder;
 
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.LaserCan.RangingMode;
@@ -17,6 +18,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -29,20 +31,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.Robot;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
   public Arm arm = new Arm();
   public LaserCan lc;
+  public LaserCan lc2;
   public TalonFX LauncherFeedMotor = new TalonFX(TunerConstants.LaunchFeed);
   public TalonFX IntakeFeedMotor = new TalonFX(TunerConstants.IntakeFeed);
   public TalonFX IntakeCenterMotor = new TalonFX(TunerConstants.IntakeCenter);
   public TalonFX LaunchRtFlywheel = new TalonFX(TunerConstants.LaunchRtFlywheel);
   public TalonFX LaunchLtFlywheel = new TalonFX(TunerConstants.LaunchLtFlywheel);
-  public LaserCan ArmAngleSensor = new LaserCan(TunerConstants.ArmSensor);
-  public LaserCan IntakeSensor = new LaserCan(TunerConstants.IntakeSensor);
+  public final CANSparkMax arm_Spark1 = new CANSparkMax(11,MotorType.kBrushless);
+  // public LaserCan ArmAngleSensor = new LaserCan(TunerConstants.ArmSensor);
+  // public LaserCan IntakeSensor = new LaserCan(TunerConstants.IntakeSensor);
 
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
@@ -95,6 +97,8 @@ public class RobotContainer {
       IntakeCenterMotor.set(fullSpeedAhead);
       LauncherFeedMotor.set(fullSpeedAhead);
       shootOff();
+      checkSet();
+      intakeOff();
       }));
 
     opstick.button(2)
@@ -110,7 +114,7 @@ public class RobotContainer {
             LauncherFeedMotor.set(fullSpeedAhead);
           })); 
   }
-
+  
     double setpoint1 = 05;
     double setpoint2 = 30;
     double setpoint3 = 60;
@@ -121,21 +125,28 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
   }
-
   public void shootOff(){
-    IntakeSensor.getMeasurement();
-    if (LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT<=100){
-        IntakeFeedMotor.set(Die);
-        IntakeCenterMotor.set(Die);
-        LauncherFeedMotor.set(Die);
-        }        
-  }
+    LaserCan.Measurement measurement = lc.getMeasurement();
+    if (measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT && measurement.distance_mm <= 100) {
+    IntakeFeedMotor.set(Die);
+    IntakeCenterMotor.set(Die);
+    LauncherFeedMotor.set(Die);
+    }
+    }
 
-  public void checkSetpoint(){
-    if (arm.=setpoint1){
-  
-        }        
-  }
+  public void intakeOff(){
+    LaserCan.Measurement measurement = lc2.getMeasurement();
+    if (measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT && measurement.distance_mm <= 100) {
+    LauncherFeedMotor.set(Die);
+    }
+    }
+
+  public void checkSet(){
+     arm_Spark1.measurement = arm_Spark1.getAbsolutePosition();
+    if (arm_Spark1.measurement = setpoint1){
+    LauncherFeedMotor.set(0.5);
+    }
+    }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
