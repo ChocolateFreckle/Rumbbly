@@ -29,12 +29,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Arm;
+//import frc.robot.subsystems.Arm;
 import frc.robot.Robot;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
-  public Arm arm = new Arm();
+  //public Arm arm = new Arm();
   public LaserCan lc;
   public LaserCan lc2;
   public TalonFX LauncherFeedMotor = new TalonFX(TunerConstants.LaunchFeed);
@@ -85,27 +85,27 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
 
     opstick.button(8).onTrue(new InstantCommand(()->{
-          arm.enable();
-          arm.setGoal(setpoint1);
+        //   arm.enable();
+        //   arm.setGoal(setpoint1);
           LaunchRtFlywheel.set(warmup);
           LaunchLtFlywheel.set(warmup);
           }));
 
     opstick.button(1).onTrue(new InstantCommand(()->{
-      arm.setGoal(setpoint1);
+      //arm.setGoal(setpoint1);
       IntakeFeedMotor.set(fullSpeedAhead);
       IntakeCenterMotor.set(fullSpeedAhead);
       LauncherFeedMotor.set(fullSpeedAhead);
       shootOff();
-      checkSet();
+      //checkSet();
       intakeOff();
       }));
 
-    opstick.button(2)
-    .onTrue(new InstantCommand(()->arm.setGoal(setpoint2)));
+    // opstick.button(2)
+    // .onTrue(new InstantCommand(()->arm.setGoal(setpoint2)));
 
-    opstick.button(3)
-    .onTrue(new InstantCommand(()->arm.setGoal(setpoint3)));
+    // opstick.button(3)
+    // .onTrue(new InstantCommand(()->arm.setGoal(setpoint3)));
 
     opstick.button(4)
           .onTrue(new InstantCommand(()->{
@@ -141,12 +141,12 @@ public class RobotContainer {
     }
     }
 
-  public void checkSet(){
-     arm_Spark1.measurement = arm_Spark1.getAbsolutePosition();
-    if (arm_Spark1.measurement = setpoint1){
-    LauncherFeedMotor.set(0.5);
-    }
-    }
+//   public void checkSet(){
+//      arm_Spark1.measurement = arm_Spark1.getAbsolutePosition();
+//     if (arm_Spark1.measurement = setpoint1){
+//     LauncherFeedMotor.set(0.5);
+//     }
+//     }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");

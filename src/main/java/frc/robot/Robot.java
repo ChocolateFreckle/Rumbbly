@@ -1,70 +1,33 @@
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
 
-import au.grapplerobotics.LaserCan;
-import au.grapplerobotics.ConfigurationFailedException;
-import edu.wpi.first.wpilibj.TimedRobot;
+import com.pathplanner.lib.commands.FollowPathCommand;
+
+import edu.wpi.first.wpilibj.TimedRobot; 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.CTREConfigs;
 
 public class Robot extends TimedRobot {
-  // public LaserCan lc; 
-  // public LaserCan lc2;
+  public static final CTREConfigs ctreConfigs = new CTREConfigs();
+  
+  private Command m_autonomousCommand;
 
-  // @Override
-  // public void robotInit() {
-  //   lc = new LaserCan(0);
-  //   lc2 = new LaserCan(1);
-  //   // Optionally initialise the settings of the LaserCAN, if you haven't already done so in GrappleHook
-  //   try {
-  //     lc.setRangingMode(LaserCan.RangingMode.SHORT);
-  //     lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
-  //     lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
-  //   } catch (ConfigurationFailedException e) {
-  //     System.out.println("Configuration failed! " + e);
-  //   }
-
-  //   try {
-  //     lc2.setRangingMode(LaserCan.RangingMode.SHORT);
-  //     lc2.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
-  //     lc2.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
-  //   } catch (ConfigurationFailedException e) {
-  //     System.out.println("Configuration failed! " + e);
-  //   }
-  // }
-
-  // @Override
-  // public void robotPeriodic() {
-  //   LaserCan.Measurement measurement = lc.getMeasurement();
-  //   if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-  //     System.out.println("The target is " + measurement.distance_mm + "mm away!");
-  //   } else {
-  //     System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
-  //     // You can still use distance_mm in here, if you're ok tolerating a clamped value or an unreliable measurement.
-  //   }
-
-  //   LaserCan.Measurement measurement2 = lc2.getMeasurement();
-  //   if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-  //     System.out.println("The target is " + measurement2.distance_mm + "mm away!");
-  //   } else {
-  //     System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
-  //     // You can still use distance_mm in here, if you're ok tolerating a clamped value or an unreliable measurement.
-  //   }
-  //}
+  private RobotContainer m_robotContainer;
 
   @Override
-  public void autonomousInit() {}
+  public void robotInit() {
+    m_robotContainer = new RobotContainer();
+    //FollowPathCommand.warmupCommand().schedule();
+  }
 
   @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void teleopInit() {}
-
-  @Override
-  public void teleopPeriodic() {}
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run(); 
+  }
 
   @Override
   public void disabledInit() {}
@@ -73,8 +36,47 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {}
 
   @Override
-  public void testInit() {}
+  public void disabledExit() {}
+
+  @Override
+  public void autonomousInit() {
+    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+  }
+
+  @Override
+  public void autonomousPeriodic() {}
+
+  @Override
+  public void autonomousExit() {}
+
+  @Override
+  public void teleopInit() {
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    }
+  }
+
+  @Override
+  public void teleopPeriodic() {}
+
+  @Override
+  public void teleopExit() {}
+
+  @Override
+  public void testInit() {
+    CommandScheduler.getInstance().cancelAll();
+  }
 
   @Override
   public void testPeriodic() {}
+
+  @Override
+  public void testExit() {}
+
+  @Override
+  public void simulationPeriodic() {}
 }
